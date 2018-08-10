@@ -7,74 +7,62 @@ namespace FirstXamarin.Collections
 {
     public class PhonesCollection : INotifyCollectionChanged
     {
-        private static object locker = new object();
-        private IDataStore<PhonesBook> dataStore;
-        private static PhonesCollection phonesCollection;
-        private List<PhonesBook> collection;
+        private static readonly object Locker = new object();
+        private readonly IDataStore<PhonesBook> _dataStore;
+        private static PhonesCollection _phonesCollection;
 
         public static PhonesCollection GetPhonesCollection
         {
             get
             {
-                if (phonesCollection == null)
+                if (_phonesCollection == null)
                 {
-                    lock (locker)
+                    lock (Locker)
                     {
-                        if (phonesCollection == null)
+                        if (_phonesCollection == null)
                         {
-                            phonesCollection = new PhonesCollection();
+                            _phonesCollection = new PhonesCollection();
                         }
                     }
                 }
-                return phonesCollection;
+
+                return _phonesCollection;
             }
         }
-        public List<PhonesBook> GetCollection
-        {
-            get
-            {
-                return collection;
-            }
-        }
+        public List<PhonesBook> Collection { get; private set; }
 
         private PhonesCollection()
         {
-            dataStore = DataStore.GetDataStore;
+            _dataStore = DataStore.GetDataStore;
             UpdateCollection();
         }
 
         private async void UpdateCollection()
         {
-            collection = await dataStore.GetItemsAsync();
+            Collection = await _dataStore.GetItemsAsync();
             OnCollectionChanged(NotifyCollectionChangedAction.Reset, null);
         }
 
         public async void AddPhone(PhonesBook item)
         {
-            if (await dataStore.AddItemAsync(item))
-            {
-                collection.Add(item);
-                OnCollectionChanged(NotifyCollectionChangedAction.Add, item);
-            }
+            if (!await _dataStore.AddItemAsync(item)) return;
+            Collection.Add(item);
+            OnCollectionChanged(NotifyCollectionChangedAction.Add, item);
         }
         public async void EditPhone(PhonesBook item)
         {
-            if (await dataStore.UpdateItemAsync(item))
-            {
-                PhonesBook element = collection.Find(el => el.Id == item.Id);
-                collection.Remove(element);
-                OnCollectionChanged(NotifyCollectionChangedAction.Remove, element);
-                collection.Add(item);
-                OnCollectionChanged(NotifyCollectionChangedAction.Add, item);
-            }
+            if (!await _dataStore.UpdateItemAsync(item)) return;
+            PhonesBook element = Collection.Find(el => el.Id == item.Id);
+            Collection.Remove(element);
+            OnCollectionChanged(NotifyCollectionChangedAction.Remove, element);
+            Collection.Add(item);
+            OnCollectionChanged(NotifyCollectionChangedAction.Add, item);
         }
         public async void RemovePhone(PhonesBook item)
         {
-            if (await dataStore.DeleteItemAsync(item))
-            {
-                collection.Remove(item);
-                OnCollectionChanged(NotifyCollectionChangedAction.Remove, item);
-            }
+            if (!await _dataStore.DeleteItemAsync(item)) return;
+            Collection.Remove(item);
+            OnCollectionChanged(NotifyCollectionChangedAction.Remove, item);
         }
 
         public event NotifyCollectionChangedEventHandler CollectionChanged;

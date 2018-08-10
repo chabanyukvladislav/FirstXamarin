@@ -11,54 +11,36 @@ namespace FirstXamarin.ViewModels
 {
     public class ItemsViewModel : INotifyPropertyChanged
     {
-        private PhonesCollection collection;
-        private ObservableCollection<PhonesBook> items;
-        private bool isRefreshing = false;
-
-        public bool IsRefreshing
-        {
-            get
-            {
-                return isRefreshing;
-            }
-            private set
-            {
-                isRefreshing = value;
-                OnPropertyChanged(nameof(IsRefreshing));
-            }
-        }
+        private readonly PhonesCollection _collection;
+        private ObservableCollection<PhonesBook> _items;
+        
         public ObservableCollection<PhonesBook> Items
         {
-            get
-            {
-                return items;
-            }
+            get => _items;
             private set
             {
-                items = value;
+                _items = value;
                 OnPropertyChanged(nameof(Items));
             }
         }
 
         public PhonesBook ItemSelected { get; set; }
-        public ICommand AddItem { get; private set; }
-        public ICommand RemoveItem { get; private set; }
-        public ICommand UpdateItem { get; private set; }
+        public ICommand AddItem { get; }
+        public ICommand RemoveItem { get; }
+        public ICommand UpdateItem { get; }
 
         public ItemsViewModel()
         {
-            collection = PhonesCollection.GetPhonesCollection;
+            _collection = PhonesCollection.GetPhonesCollection;
             AddItem = new Command(ExecuteAddItem);
             RemoveItem = new Command(ExecuteRemoveItem);
             UpdateItem = new Command(ExecuteUpdateItem);
-            collection.CollectionChanged += ExecuteRefresh;
+            _collection.CollectionChanged += ExecuteRefresh;
         }
 
         private void ExecuteRefresh(object sender, NotifyCollectionChangedEventArgs e)
         {
-            IsRefreshing = true;
-            Items = new ObservableCollection<PhonesBook>(collection.GetCollection);
-            IsRefreshing = false;
+            Items = new ObservableCollection<PhonesBook>(_collection.Collection);
         }
         private async void ExecuteAddItem()
         {
@@ -71,7 +53,7 @@ namespace FirstXamarin.ViewModels
                 return;
             if (!await Application.Current.MainPage.DisplayAlert("Delete?", "Are you sure?", "Yes", "No"))
                 return;
-            collection.RemovePhone(ItemSelected);
+            _collection.RemovePhone(ItemSelected);
             ItemSelected = null;
         }
         private async void ExecuteUpdateItem()

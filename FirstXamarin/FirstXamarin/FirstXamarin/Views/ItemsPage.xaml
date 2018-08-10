@@ -11,7 +11,7 @@
     </ContentPage.ToolbarItems>
     <ContentPage.Content>
         <StackLayout>
-            <ListView x:Name="ItemsListView" ItemsSource="{Binding Items}" SelectedItem="{Binding ItemSelected, Mode=TwoWay}" IsRefreshing="{Binding IsRefreshing}">
+            <ListView x:Name="ItemsListView" ItemsSource="{Binding Items}" SelectedItem="{Binding ItemSelected, Mode=TwoWay}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>

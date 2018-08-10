@@ -9,31 +9,31 @@ namespace FirstXamarin.Services
 {
     public class DataStore : IDataStore<PhonesBook>
     {
-        private static object locker = new object();
-        private static DataStore dataStore;
-        private Context context;
+        private static readonly object Locker = new object();
+        private static DataStore _dataStore;
+        private readonly Context _context;
 
         public static IDataStore<PhonesBook> GetDataStore
         {
             get
             {
-                if (dataStore == null)
+                if (_dataStore == null)
                 {
-                    lock (locker)
+                    lock (Locker)
                     {
-                        if (dataStore == null)
+                        if (_dataStore == null)
                         {
-                            dataStore = new DataStore();
+                            _dataStore = new DataStore();
                         }
                     }
                 }
-                return dataStore;
+                return _dataStore;
             }
         }
 
         private DataStore()
         {
-            context = new Context();
+            _context = new Context();
         }
 
         public async Task<bool> AddItemAsync(PhonesBook item)
@@ -42,11 +42,11 @@ namespace FirstXamarin.Services
             {
                 try
                 {
-                    context.PhonesBooks.Add(item);
-                    context.SaveChanges();
+                    _context.PhonesBooks.Add(item);
+                    _context.SaveChanges();
                     return true;
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     return false;
                 }
@@ -59,11 +59,11 @@ namespace FirstXamarin.Services
             {
                 try
                 {
-                    context.PhonesBooks.Remove(item);
-                    context.SaveChanges();
+                    _context.PhonesBooks.Remove(item);
+                    _context.SaveChanges();
                     return true;
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     return false;
                 }
@@ -76,14 +76,17 @@ namespace FirstXamarin.Services
             {
                 try
                 {
-                    PhonesBook data = context.PhonesBooks.FirstOrDefault(el => el.Id == item.Id);
-                    data.Name = item.Name;
-                    data.Surname = item.Surname;
-                    data.Phone = item.Phone;
-                    context.SaveChanges();
+                    PhonesBook data = _context.PhonesBooks.FirstOrDefault(el => el.Id == item.Id);
+                    if (data != null)
+                    {
+                        data.Name = item.Name;
+                        data.Surname = item.Surname;
+                        data.Phone = item.Phone;
+                    }
+                    _context.SaveChanges();
                     return true;
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     return false;
                 }
@@ -96,10 +99,10 @@ namespace FirstXamarin.Services
             {
                 try
                 {
-                    PhonesBook data = context.PhonesBooks.FirstOrDefault(item => item.Id == id);
+                    PhonesBook data = _context.PhonesBooks.FirstOrDefault(item => item.Id == id);
                     return data;
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     return null;
                 }
@@ -112,10 +115,10 @@ namespace FirstXamarin.Services
             {
                 try
                 {
-                    List<PhonesBook> data = context.PhonesBooks.ToList();
+                    List<PhonesBook> data = _context.PhonesBooks.ToList();
                     return data;
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     return new List<PhonesBook>();
                 }

@@ -7,9 +7,9 @@ using Xamarin.Forms;
 
 namespace FirstXamarin.DatabaseContext
 {
-    public class Context : DbContext
+    public sealed class Context : DbContext
     {
-        private const string databaseName = "database.db";
+        private const string DatabaseName = "database.db";
 
         public DbSet<PhonesBook> PhonesBooks { get; set; }
 
@@ -21,18 +21,18 @@ namespace FirstXamarin.DatabaseContext
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            string databasePath = "";
+            string databasePath;
             switch (Device.RuntimePlatform)
             {
                 case Device.Android:
-                    databasePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), databaseName);
+                    databasePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), DatabaseName);
                     break;
                 case Device.iOS:
                     Batteries.Init();
-                    databasePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "..", "Library", databaseName);
+                    databasePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "..", "Library", DatabaseName);
                     break;
                 case Device.UWP:
-                    databasePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), databaseName);
+                    databasePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), DatabaseName);
                     break;
                 default:
                     throw new NotImplementedException("Platform not supported");
