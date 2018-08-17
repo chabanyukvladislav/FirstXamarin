@@ -23,7 +23,14 @@ namespace FirstXamarin.ViewModels
         {
             _collection = PhonesCollection.GetPhonesCollection;
             Save = new Command(ExecuteSave);
-            Item = item;
+            PhonesBook phone = new PhonesBook
+            {
+                Id = item.Id,
+                Name = item.Name,
+                Surname = item.Surname,
+                Phone = item.Phone
+            };
+            Item = phone;
         }
 
         private async void ExecuteSave()

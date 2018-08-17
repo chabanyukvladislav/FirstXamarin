@@ -15,12 +15,10 @@
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
-                            <StackLayout Padding="10">
-                                <StackLayout Orientation="Horizontal">
-                                    <Label Text="{Binding Name}" LineBreakMode="NoWrap" Style="{DynamicResource ListItemTextStyle}" FontSize="16" />
-                                    <Label Text="{Binding Surname}" LineBreakMode="NoWrap" Style="{DynamicResource ListItemDetailTextStyle}" FontSize="16" />
-                                </StackLayout>
-                                <Label Text="{Binding Phone}" LineBreakMode="NoWrap" Style="{DynamicResource ListItemDetailTextStyle}" FontSize="16" />
+                            <StackLayout Padding="10" Orientation="Horizontal">
+                                <Label Text="{Binding Name}" FontAttributes="Bold" LineBreakMode="NoWrap" Style="{DynamicResource ListItemTextStyle}" FontSize="20" />
+                                <Label Text="{Binding Surname}" LineBreakMode="NoWrap" Style="{DynamicResource ListItemDetailTextStyle}" FontSize="20" />
+                                <Label Text="{Binding Phone}" LineBreakMode="NoWrap" Style="{DynamicResource ListItemDetailTextStyle}" FontSize="20" />
                             </StackLayout>
                         </ViewCell>
                     </DataTemplate>

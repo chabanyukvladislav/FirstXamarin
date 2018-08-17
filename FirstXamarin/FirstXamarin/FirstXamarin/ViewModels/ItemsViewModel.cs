@@ -13,7 +13,8 @@ namespace FirstXamarin.ViewModels
     {
         private readonly PhonesCollection _collection;
         private ObservableCollection<PhonesBook> _items;
-        
+        private PhonesBook _itemSelected;
+
         public ObservableCollection<PhonesBook> Items
         {
             get => _items;
@@ -24,7 +25,15 @@ namespace FirstXamarin.ViewModels
             }
         }
 
-        public PhonesBook ItemSelected { get; set; }
+        public PhonesBook ItemSelected
+        {
+            get => _itemSelected;
+            set
+            {
+                _itemSelected = value;
+                OnPropertyChanged(nameof(ItemSelected));
+            }
+        }
         public ICommand AddItem { get; }
         public ICommand RemoveItem { get; }
         public ICommand UpdateItem { get; }
